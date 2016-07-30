@@ -27,4 +27,5 @@
         android:id="@+id/ll_bottom_control"
         layout="@layout/include_status_controlbar" />
 
+
 </LinearLayout>

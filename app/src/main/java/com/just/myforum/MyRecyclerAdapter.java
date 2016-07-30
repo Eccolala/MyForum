@@ -3,12 +3,15 @@ package com.just.myforum;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -17,6 +20,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder> {
     private List<Bean> list;
     private LayoutInflater inflater;
     private Context context;
+
 
 
 
@@ -34,7 +38,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
 
         Picasso.with(context).load(list.get(position).getImgOne()).resize(200, 200).centerCrop().into(holder.foodPic1);
@@ -45,6 +49,28 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.usrName.setText(list.get(position).getUsrName());
         holder.time.setText(list.get(position).getTime());
         holder.text.setText(list.get(position).getText());
+
+
+        holder.comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialDialog.Builder(context)
+                        .title("写评论")
+                        .inputType(InputType.TYPE_CLASS_TEXT)
+                        .input("我想说......", "", new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(MaterialDialog dialog, CharSequence input) {
+                                // Do something
+
+                                // 将TextView 加入到LinearLayout 中
+                                TextView tv = new TextView(context);
+                                tv.setText(input);
+                                holder.linearLayout. addView ( tv );
+
+                            }
+                        }).show();
+            }
+        });
 
 
     }
@@ -66,6 +92,8 @@ class MyViewHolder extends RecyclerView.ViewHolder {
     TextView time;
     TextView text;
 
+    LinearLayout linearLayout;
+
     public MyViewHolder(View parent) {
         super(parent);
         foodPic1 = (ImageView) parent.findViewById(R.id.iv_image1);
@@ -78,5 +106,8 @@ class MyViewHolder extends RecyclerView.ViewHolder {
         usrName = (TextView) parent.findViewById(R.id.tv_subhead);
         time = (TextView) parent.findViewById(R.id.tv_caption);
         text = (TextView) parent.findViewById(R.id.tv_content);
+
+        linearLayout = (LinearLayout)parent.findViewById(R.id.comment_list);
+
     }
 }

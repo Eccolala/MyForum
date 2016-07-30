@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Context mContext;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,9 +68,12 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
 
 
+
+
+
     }
 
     public void comment(View view) {
-        startActivity(new Intent(this,CommentActivity.class));
+        startActivity(new Intent(this, CommentActivity.class));
     }
 }
