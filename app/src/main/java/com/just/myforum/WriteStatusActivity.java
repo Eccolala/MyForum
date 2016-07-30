@@ -19,6 +19,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.johnpersano.supertoasts.SuperActivityToast;
+import com.github.johnpersano.supertoasts.SuperToast;
+import com.github.johnpersano.supertoasts.util.Style;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +35,12 @@ public class WriteStatusActivity extends BaseActivity implements OnClickListener
     private WrapHeightGridView gv_write_status;
     // 转发微博内容
     private View include_retweeted_status_card;
-    private ImageView iv_rstatus_img;;
-    private TextView tv_rstatus_username;;
-    private TextView tv_rstatus_content;;
+    private ImageView iv_rstatus_img;
+    ;
+    private TextView tv_rstatus_username;
+    ;
+    private TextView tv_rstatus_content;
+    ;
     // 底部添加栏
     private ImageView iv_image;
     private ImageView iv_at;
@@ -50,6 +57,11 @@ public class WriteStatusActivity extends BaseActivity implements OnClickListener
     private ArrayList<Uri> imgUris = new ArrayList<Uri>();
     private EmotionPagerAdapter emotionPagerGvAdapter;
 
+    public List<Bean> mList;
+
+    private MyApplication app;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +69,7 @@ public class WriteStatusActivity extends BaseActivity implements OnClickListener
 
         setContentView(R.layout.activity_comment);
 
+        app = (MyApplication)getApplication();
 
         initView();
     }
@@ -97,25 +110,38 @@ public class WriteStatusActivity extends BaseActivity implements OnClickListener
      * 发送微博
      */
     private void sendStatus() {
+        //获取微博正文
         String statusContent = et_write_status.getText().toString();
-        if(TextUtils.isEmpty(statusContent)) {
-            showToast("微博内容不能为空");
+        if (TextUtils.isEmpty(statusContent)) {
+            SuperActivityToast.create(this, "微博内容不能为空　0_0",
+                    SuperToast.Duration.SHORT, Style.getStyle(Style.ORANGE, SuperToast.Animations.FLYIN)).show();
             return;
         }
 
-        String imgFilePath = null;
-        if(imgUris.size() > 0) {
-            Uri uri = imgUris.get(0);
-            imgFilePath = ImageUtils.getImageAbsolutePath19(this, uri);
-        }
 
+
+        if (imgUris.size() != 2){
+            SuperActivityToast.create(this, "大家希望看到你的作品，请至少选择两张图片　^_^",
+                    SuperToast.Duration.SHORT, Style.getStyle(Style.ORANGE, SuperToast.Animations.FLYIN)).show();
+            return;
+        }
+        if (imgUris.size() > 0) {
+
+
+
+            Bean bean = new Bean(R.drawable.logo_0, "eccolala", "2016.7.1", imgUris.get(0), statusContent, imgUris.get(1));
+            app.mList.add(bean);
+
+            SuperActivityToast.create(this, "发布成功　^_^",
+                    SuperToast.Duration.SHORT, Style.getStyle(Style.ORANGE, SuperToast.Animations.FLYIN)).show();
+        }
 
 
     }
 
 
     /**
-     *  初始化表情面板内容
+     * 初始化表情面板内容
      */
     private void initEmotion() {
         int screenWidth = DisplayUtils.getScreenWidthPixels(this);
@@ -126,10 +152,10 @@ public class WriteStatusActivity extends BaseActivity implements OnClickListener
 
         List<GridView> gvs = new ArrayList<GridView>();
         List<String> emotionNames = new ArrayList<String>();
-        for(String emojiName : EmotionUtils.emojiMap.keySet()) {
+        for (String emojiName : EmotionUtils.emojiMap.keySet()) {
             emotionNames.add(emojiName);
 
-            if(emotionNames.size() == 20) {
+            if (emotionNames.size() == 20) {
                 GridView gv = createEmotionGridView(emotionNames, screenWidth, spacing, itemWidth, gvHeight);
                 gvs.add(gv);
 
@@ -137,7 +163,7 @@ public class WriteStatusActivity extends BaseActivity implements OnClickListener
             }
         }
 
-        if(emotionNames.size() > 0) {
+        if (emotionNames.size() > 0) {
             GridView gv = createEmotionGridView(emotionNames, screenWidth, spacing, itemWidth, gvHeight);
             gvs.add(gv);
         }
@@ -174,7 +200,7 @@ public class WriteStatusActivity extends BaseActivity implements OnClickListener
      * 更新图片显示
      */
     private void updateImgs() {
-        if(imgUris.size() > 0) {
+        if (imgUris.size() > 0) {
             gv_write_status.setVisibility(View.VISIBLE);
             statusImgsAdapter.notifyDataSetChanged();
         } else {
@@ -193,7 +219,7 @@ public class WriteStatusActivity extends BaseActivity implements OnClickListener
             case R.id.iv_topic:
                 break;
             case R.id.iv_emoji:
-                if(ll_emotion_dashboard.getVisibility() == View.VISIBLE) {
+                if (ll_emotion_dashboard.getVisibility() == View.VISIBLE) {
                     ll_emotion_dashboard.setVisibility(View.GONE);
                     iv_emoji.setImageResource(R.drawable.btn_insert_emotion);
                 } else {
@@ -202,6 +228,9 @@ public class WriteStatusActivity extends BaseActivity implements OnClickListener
                 }
                 break;
             case R.id.iv_add:
+                //发微博
+                sendStatus();
+
                 break;
         }
     }
@@ -209,14 +238,14 @@ public class WriteStatusActivity extends BaseActivity implements OnClickListener
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Object itemAdapter = parent.getAdapter();
-        if(itemAdapter instanceof WriteStatusGridImgsAdapter) {
-            if(position == statusImgsAdapter.getCount() - 1) {
+        if (itemAdapter instanceof WriteStatusGridImgsAdapter) {
+            if (position == statusImgsAdapter.getCount() - 1) {
                 ImageUtils.showImagePickDialog(this);
             }
-        } else if(itemAdapter instanceof EmotionGvAdapter) {
+        } else if (itemAdapter instanceof EmotionGvAdapter) {
             EmotionGvAdapter emotionAdapter = (EmotionGvAdapter) itemAdapter;
 
-            if(position == emotionAdapter.getCount() - 1) {
+            if (position == emotionAdapter.getCount() - 1) {
                 et_write_status.dispatchKeyEvent(
                         new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
             } else {
@@ -242,7 +271,7 @@ public class WriteStatusActivity extends BaseActivity implements OnClickListener
 
         switch (requestCode) {
             case ImageUtils.REQUEST_CODE_FROM_ALBUM:
-                if(resultCode == RESULT_CANCELED) {
+                if (resultCode == RESULT_CANCELED) {
                     return;
                 }
                 Uri imageUri = data.getData();
@@ -251,7 +280,7 @@ public class WriteStatusActivity extends BaseActivity implements OnClickListener
                 updateImgs();
                 break;
             case ImageUtils.REQUEST_CODE_FROM_CAMERA:
-                if(resultCode == RESULT_CANCELED) {
+                if (resultCode == RESULT_CANCELED) {
                     ImageUtils.deleteImageUri(this, ImageUtils.imageUriFromCamera);
                 } else {
                     Uri imageUriCamera = ImageUtils.imageUriFromCamera;

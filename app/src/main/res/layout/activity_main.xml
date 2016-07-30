@@ -11,15 +11,23 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_menu_send"
         android:onClick="comment"
+        android:src="@android:drawable/ic_menu_send"
 
         />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView_id"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/id_swipe_ly"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView_id"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </FrameLayout>

@@ -41,14 +41,20 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyViewHolder> {
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
 
-        Picasso.with(context).load(list.get(position).getImgOne()).resize(200, 200).centerCrop().into(holder.foodPic1);
-        Picasso.with(context).load(list.get(position).getImgTwo()).resize(200, 200).centerCrop().into(holder.foodPic2);
-        Picasso.with(context).load(list.get(position).getPicThumb()).resize(100, 100).centerCrop().into(holder.usrPic);
+
+        Picasso.with(context).load(list.get(position).imgOne).resize(200, 200).centerCrop().into(holder.foodPic1);
+        Picasso.with(context).load(list.get(position).imgTwo).resize(200, 200).centerCrop().into(holder.foodPic2);
 
 
-        holder.usrName.setText(list.get(position).getUsrName());
-        holder.time.setText(list.get(position).getTime());
-        holder.text.setText(list.get(position).getText());
+
+
+
+        Picasso.with(context).load(list.get(position).picThumb).resize(100, 100).centerCrop().into(holder.usrPic);
+
+
+        holder.usrName.setText(list.get(position).usrName);
+        holder.time.setText(list.get(position).time);
+        holder.text.setText(list.get(position).text);
 
 
         holder.comment.setOnClickListener(new View.OnClickListener() {
