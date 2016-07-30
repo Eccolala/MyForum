@@ -74,6 +74,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void comment(View view) {
-        startActivity(new Intent(this, CommentActivity.class));
+        startActivity(new Intent(this, WriteStatusActivity.class));
     }
 }
